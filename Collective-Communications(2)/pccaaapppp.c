@@ -1,44 +1,36 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include "mpi.h"
-#include <string.h>
 
 int main(int argc, char* argv[]){
-    int rank, size, recvLen;
-    char string[100], buff;
-    MPI_Comm world = MPI_COMM_WORLD;
+    int rank, size, arr[3][3], toSearch, b[3], ans=0, out;
     MPI_Init( &argc, &argv);
     MPI_Comm_rank( MPI_COMM_WORLD , &rank);
     MPI_Comm_size( MPI_COMM_WORLD , &size);
-    MPI_Status status;
-    if (rank==0){
-        printf("Enter string: ");
-        scanf("%s", string);
-    }
-
-    MPI_Scatter( string , 1 , MPI_CHAR , &buff , 1 , MPI_CHAR , 0 , world);
-    char tempBuff[rank+1];
-    for (int i=0; i<rank+1; i++){
-        tempBuff[i] = buff;
-    }
 
     if (rank==0){
-        int i = 0;
-        char output[100][100];
-        for (i; i<size;i++){
-            for (int j=0; j< i+1; j++){
-                MPI_Recv( &output[i][j] , 1 , MPI_CHAR , i , i , world, &status);
-            }
-            
+        printf("Enter 3x3 matrix elements: ");
+        for(int i=0; i<3;i++){
+            for(int j=0; j<3;j++)
+                scanf("%d", &arr[i][j]);
         }
+        printf("Element to be searched: ");
+        scanf("%d", &toSearch);
     }
-    else{
-        for (int i=0; i<rank+1;i++){
-            MPI_Send( &tempBuff[i] , 1 , MPI_CHAR , 0 , 1 , world);
-        }
+    MPI_Bcast( &toSearch , 1 , MPI_INT , 0 , MPI_COMM_WORLD);
+    MPI_Scatter( arr , 3 , MPI_INT , b , 3 , MPI_INT , 0 , MPI_COMM_WORLD);
+    for(int i=0; i<3;i++){
+        if (b[i] == toSearch)
+            ans += 1;
     }
 
+    MPI_Reduce( &ans , &out , 1 , MPI_INT , MPI_SUM , 0 , MPI_COMM_WORLD);
+    if (rank == 0)
+        fprintf(stdout, "Total Occurences: %d", out);
 
     MPI_Finalize();
     fflush(stdout);
+
+
 }
+
