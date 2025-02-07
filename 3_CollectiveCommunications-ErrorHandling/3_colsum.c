@@ -11,9 +11,11 @@ int main(int argc, char* argv[]){
 
     if (rank==0){
         printf("Enter 4x4 matrix elements: ");
+        fflush(stdout);
         for(int i=0; i<4;i++){
             for(int j=0; j<4;j++)
                 scanf("%d", &arr[i][j]);
+                fflush(stdout);
         }
     }
 
@@ -26,6 +28,7 @@ int main(int argc, char* argv[]){
 
     if (rank==0){
         printf("Output Arr: \n");
+        fflush(stdout);
         for (int i=0; i<4; i++){
             for(int j=0;j < 4; j++){
                 printf("%d ", outPut[i][j]);

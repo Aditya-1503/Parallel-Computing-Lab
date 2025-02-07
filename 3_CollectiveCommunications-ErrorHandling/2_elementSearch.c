@@ -8,6 +8,7 @@ void handle_mpi_error(int errcode) {
     int length_of_error_string;
     MPI_Error_string(errcode, error_string, &length_of_error_string);
     fprintf(stderr, "MPI Error: %s\n", error_string);
+    fflush(stderr);
     MPI_Abort(MPI_COMM_WORLD, errcode);
 }
 
@@ -22,11 +23,13 @@ int main(int argc, char* argv[]){
 
     if (rank==0){
         printf("Enter 3x3 matrix elements: ");
+        fflush(stdout);
         for(int i=0; i<3;i++){
             for(int j=0; j<3;j++)
                 scanf("%d", &arr[i][j]);
         }
         printf("Element to be searched: ");
+        fflush(stdout);
         scanf("%d", &toSearch);
     }
     MPI_Bcast( &toSearch , 1 , MPI_INT , 0 , MPI_COMM_WORLD);
@@ -42,9 +45,9 @@ int main(int argc, char* argv[]){
     MPI_Reduce( &ans , &out , 1 , MPI_INT , MPI_SUM , 0 , MPI_COMM_WORLD);
     if (rank == 0)
         fprintf(stdout, "Total Occurences: %d", out);
+        fflush(stdout);
 
     MPI_Finalize();
-    fflush(stdout);
 
 
 }
