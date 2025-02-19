@@ -12,7 +12,8 @@ int main(int argc, char* argv[]){
     MPI_Status status;
     if (rank == 0){
         printf("Enter string: ");
-        scanf("%s", &string);
+        fflush(stdout);
+        scanf("%s", string);
         len = strlen(string);
         MPI_Ssend(&len, 1, MPI_INT, 1, 1, MPI_COMM_WORLD);
         MPI_Ssend(&string, len, MPI_CHAR, 1, 1, MPI_COMM_WORLD);
@@ -21,7 +22,7 @@ int main(int argc, char* argv[]){
         
         out[len]= '\0';
         fprintf(stdout, "Output string: %s ", out);
-        
+        fflush(stdout);
         }
 
     else{
