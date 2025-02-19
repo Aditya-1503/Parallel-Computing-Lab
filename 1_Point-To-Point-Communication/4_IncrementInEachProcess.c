@@ -10,16 +10,20 @@ int main(int argc, char*argv[]){
 
 	if(rank == 0){
 		printf("Enter value \n");
+		fflush(stdout);
 		scanf("%d",&n);
 
 		MPI_Send(&n,1,MPI_INT,1,1,MPI_COMM_WORLD);
 		MPI_Recv(&n,1,MPI_INT,size-1,1,MPI_COMM_WORLD,&status);
 		printf("Rank %d Received %d \n",rank,n);
+		fflush(stdout);
 	}
 	else{
 		MPI_Recv(&n,1,MPI_INT,rank-1,1,MPI_COMM_WORLD,&status);
 		printf("Rank %d Received %d \n",rank,n);
+		fflush(stdout);
 		n++;
+		printf("Rank %d, Sending %d... \n", rank, n);
 		MPI_Send(&n,1,MPI_INT,(rank+1) % size,1,MPI_COMM_WORLD);
 	}
 	MPI_Finalize();

@@ -11,6 +11,7 @@ int main(int argc, char*argv[]){
 
 	if(rank == 0){
 		printf("Enter %d elements : ",size);
+		fflush(stdout);
 		for(int i=0;i<size;i++){
 			scanf("%d",&arr[i]);
 		}
@@ -22,9 +23,11 @@ int main(int argc, char*argv[]){
 		MPI_Recv(&n,1,MPI_INT,0,rank,MPI_COMM_WORLD,&status);
 		if(rank%2 == 0){
 			printf("Rank = %d, Square = %d \n",rank,n*n);
+			fflush(stdout);
 		}
 		else{
 			printf("Rank = %d, Cube = %d \n",rank,n*n*n);
+			fflush(stdout);
 		}
 	}															
 
